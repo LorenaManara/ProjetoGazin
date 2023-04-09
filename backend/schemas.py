@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 
 class NiveisBase(BaseModel):
-    id: int
     nivel: str
     
 
@@ -9,14 +8,13 @@ class NiveisRequest(NiveisBase):
     ...
 
 class NiveisResponse(NiveisBase):
-    id: int
+    id: str
 
     class Config:
         orm_mode = True
 
 
 class DesenvolvedoresBase(BaseModel):
-    id: int 
     idnivel: str 
     nome: str 
     sexo: str 
@@ -24,11 +22,13 @@ class DesenvolvedoresBase(BaseModel):
     idade: int 
     hobby: str 
 
+
+
 class DesenvolvedoresRequest(DesenvolvedoresBase):
     ...
 
 class DesenvolvedoresResponse(DesenvolvedoresBase):
-    id: int
+    id: str
 
     class Config:
         orm_mode = True

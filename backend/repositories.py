@@ -33,6 +33,7 @@ class NiveisRepository:
 
 
 
+
 class DesenvolvedoresRepository:
     @staticmethod
     def find_all_Desenvolvedores(db: Session) -> list[Desenvolvedores]:

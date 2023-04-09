@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;0,700;1,200;1,800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/button.css">
+    <link rel="stylesheet" href="css/records.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js" defer></script>
+    <script src="main.js" defer></script>
+    <title>CRUD</title>
+</head>
+
+<body>
+    <header>
+        <h1 class="header-title">Cadastros</h1>
+    </header>
+    <main>
+        <button type="button" class="button blue mobile" id="cadastrarDesenvolvedorese">Cadastrar Desenvolvedor</button>
+        <table id="tableDesenvolvedor" class="records">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>idNivel</th>
+                    <th>nome</th>
+                    <th>DataNascimento</th>
+                    <th>idade</th>
+                    <th>hobby</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <div class="modal" id="modalDesenvolvedores">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h2>Novo Desenvolvedor</h2>
+                    <span class="modal-close" id="modalCloseDesenvolvedores">&#10006;</span>
+                </header>
+                <form id="FormDesenvolvedores" class="modal-form">
+                    <input type="text" id="nome" data-index="new" class="modal-field" placeholder="Nome do Desenvolvedor"
+                        required>
+                    <input type="text" id="id" class="modal-field" placeholder="id do Desenvolvedor" required>
+                    <input type="text" id="idNivel" class="modal-field" placeholder="Id Nivel do Desenvolvedor" required>
+                    <input type="text" id="nome" class="modal-field" placeholder="Nome do Desenvolvedor" required>
+                    <input type="date" id="DataNascimento" class="modal-field" required>
+                    <input type="text" id="idade" class="modal-field" placeholder="Idade do Desenvolvedor" required>
+                    <input type="text" id="hobby" class="modal-field" placeholder="Hobby do Desenvolvedor" required>
+                </form>
+                <footer class="modal-footer">
+                    <button type="submit" id="salvarDesenvolvedores" class="button green">Salvar</button>
+                    <button type="submit" id="cancelarDesenvolvedores" class="button blue">Cancelar</button>
+                </footer>
+            </div>
+        </div>
+    </main>
+    <main>
+
+
+        <button type="button" class="button blue mobile" id="cadastrarNiveis">Cadastrar Niveis</button>
+        <table id="tableNiveis" class="records">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Nivel</th>     
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <div class="modal" id="modalNiveis">
+            <div class="modal-content">
+                <header class="modal-header">
+                    <h2>Novo Nivel</h2>
+                    <span class="modal-close" id="modalCloseNiveis">&#10006;</span>
+                </header>
+                <form id="form" class="modal-form">
+                    <input type="text" id="id" class="modal-field" placeholder="id do Nivel" required>
+                    <input type="text" id="Nivel" class="modal-field" placeholder="Nivel" required>
+                </form>
+                <footer class="modal-footer">
+                    <button type="submit" id="salvarNiveis" class="button green">Salvar</button>
+                    <button type="submit" id="cancelarNiveis" class="button blue">Cancelar</button>
+                </footer>
+            </div>
+        </div>
+    </main>
+    <footer>
+        Copyright &copy; Prof. Fernando Leonid
+    </footer>
+</body>
+
+</html>

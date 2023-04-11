@@ -1,20 +1,31 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 
 from database import Base
 
-class Niveis(Base):
+
+# Definição da tabela de níveis
+class Nivel(Base):
     __tablename__ = "niveis"
 
-    id: str = Column(String(100), primary_key=True, index=True)
-    nivel: str = Column(String(100), nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    nivel = Column(String, index=True)
 
-class Desenvolvedores(Base):
+    # Relacionamento com a tabela de desenvolvedores
+    desenvolvedores = relationship("Desenvolvedor", back_populates="nivel")
+
+
+# Definição da tabela de desenvolvedores
+class Desenvolvedor(Base):
     __tablename__ = "desenvolvedores"
 
-    id: str = Column(String(100), primary_key=True, index=True)
-    idnivel: str = Column(String(100), ForeignKey(Niveis.id), primary_key=True)
-    nome: str = Column(String(100), nullable=False)
-    sexo: str = Column(String(100), nullable=False)
-    DataNascimento: str = Column(String(100), nullable=False)
-    idade: int = Column(Integer, nullable=False)
-    hobby: str = Column(String(100), nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, index=True)
+    idNivel = Column(Integer, ForeignKey("niveis.id"))
+    sexo = Column(String(1))
+    dataNascimento = Column(String(10))
+    idade = Column(Integer)
+    hobby = Column(String(100))
+
+    # Relacionamento com a tabela de níveis
+    nivel = relationship("Nivel", back_populates="desenvolvedores")

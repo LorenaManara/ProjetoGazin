@@ -1,104 +1,104 @@
-from fastapi import FastAPI, Depends, HTTPException, status, Response
+from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from models import Niveis, Desenvolvedores
-from database import engine, Base, get_db
-from repositories import NiveisRepository, DesenvolvedoresRepository 
-from schemas import NiveisRequest, NiveisResponse, DesenvolvedoresRequest,  DesenvolvedoresResponse
-
-Base.metadata.create_all(bind=engine)
+from database import SessionLocal, engine
+import models
+import schemas
 
 app = FastAPI()
+# Criando as tabelas no banco de dados
+models.Base.metadata.create_all(bind=engine)
 
-# Código inicial do arquivo omitido para facilitação da leitura
-
-
-
-# Código inicial do arquivo omitido para facilitação da leitura
-
-@app.get("/api/niveis", response_model=list[NiveisResponse])
-def find_all_Niveis(db: Session = Depends(get_db)):
-    niveis = NiveisRepository.find_all_Niveis(db)
-    return [NiveisResponse.from_orm(niveis) for niveis in niveis]
-
-# Código inicial do arquivo omitido para facilitação da leitura
-
-@app.get("/api/niveis/{id}", response_model=NiveisResponse)
-def find_by_id_Niveis(id: int, db: Session = Depends(get_db)):
-    Niveis = NiveisRepository.find_by_id_Niveis(db, id)
-    if not Niveis:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nivel nao encontrado"
-        )
-    return NiveisResponse.from_orm(Niveis)
-
-@app.delete("/api/niveis/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_by_id_Niveis(id: int, db: Session = Depends(get_db)):
-    if not NiveisRepository.exists_by_id_Niveis(db, id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nivel nao encontrado"
-        )
-    NiveisRepository.delete_by_id(db, id)
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-@app.put("/api/niveis/{id}", response_model=NiveisResponse)
-def update(id: int, request: NiveisRequest, db: Session = Depends(get_db)):
-    if not NiveisRepository.exists_by_id_Niveis(db, id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Nivel nao encontrado"
-        )
-    niveis = NiveisRepository.save_Niveis(db, Niveis(id=id, **request.dict()))
-    return NiveisResponse.from_orm(niveis)
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
+# Rotas dos níveis
+@app.post("/niveis/", response_model=schemas.NivelOut)
+def create_nivel(nivel: schemas.NivelCreate, db: Session = Depends(get_db)):
+    db_nivel = models.Nivel(nivel=nivel.nivel)
+    db.add(db_nivel)
+    db.commit()
+    db.refresh(db_nivel)
+    return db_nivel
 
-@app.post("/api/niveis", response_model=NiveisResponse, status_code=status.HTTP_201_CREATED)
-def create_Niveis(request: NiveisRequest, db: Session = Depends(get_db)):
-    nivel = NiveisRepository.save_Niveis(db, Niveis(**request.dict()))
-    return NiveisResponse.from_orm(nivel)
+@app.get("/niveis/{nivel_id}", response_model=schemas.NivelOut)
+def read_nivel(nivel_id: int, db: Session = Depends(get_db)):
+    db_nivel = db.query(models.Nivel).filter(models.Nivel.id == nivel_id).first()
+    if db_nivel is None:
+        raise HTTPException(status_code=404, detail="Nível não encontrado")
+    return db_nivel
 
+@app.get("/niveis/", response_model=list[schemas.NivelOut])
+def read_niveis(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    niveis = db.query(models.Nivel).offset(skip).limit(limit).all()
+    return niveis
 
+@app.put("/niveis/{nivel_id}", response_model=schemas.NivelOut)
+def update_nivel(nivel_id: int, nivel: schemas.NivelUpdate, db: Session = Depends(get_db)):
+    db_nivel = db.query(models.Nivel).filter(models.Nivel.id == nivel_id).first()
+    if db_nivel is None:
+        raise HTTPException(status_code=404, detail="Nível não encontrado")
+    db_nivel.nivel = nivel.nivel
+    db.commit()
+    db.refresh(db_nivel)
+    return db_nivel
 
-
-# Código inicial do arquivo omitido para facilitação da leitura
-
-@app.get("/api/desenvolvedores", response_model=list[DesenvolvedoresResponse])
-def find_all_Devs(db: Session = Depends(get_db)):
-    Desenvolvedores = DesenvolvedoresRepository.find_all_Desenvolvedores(db)
-    return [DesenvolvedoresResponse.from_orm(niveis) for niveis in Desenvolvedores]
-
-# Código inicial do arquivo omitido para facilitação da leitura
-
-@app.get("/api/desenvolvedores/{id}", response_model=DesenvolvedoresResponse)
-def find_by_id_Devs(id: int, db: Session = Depends(get_db)):
-    Desenvolvedores = DesenvolvedoresRepository.find_by_id_Desenvolvedores(db, id)
-    if not Desenvolvedores:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Desenvolvedor nao encontrado"
-        )
-    return DesenvolvedoresResponse.from_orm(Desenvolvedores)
-
-@app.delete("/api/desenvolvedores/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_by_id_Devs(id: int, db: Session = Depends(get_db)):
-    if not DesenvolvedoresRepository.exists_by_id_Desenvolvedores(db, id.first()):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Desenvolvedor nao encontrado"
-        )
-    DesenvolvedoresRepository.delete_by_id_Desenvolvedores(db, id.first())
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
-@app.put("/api/desenvolvedores/{id}", response_model=DesenvolvedoresResponse)
-def update_desenvolvedores(id: int, request: DesenvolvedoresRequest, db: Session = Depends(get_db)):
-    if not DesenvolvedoresRepository.exists_by_id_Desenvolvedores(db, id):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Desenvolvedor nao encontrado"
-        )
-    desenvolvedores = DesenvolvedoresRepository.save_Desenvolvedores(db, Desenvolvedores(id=id, **request.dict()))
-    return DesenvolvedoresResponse.from_orm(desenvolvedores)
+@app.delete("/niveis/{nivel_id}")
+def delete_nivel(nivel_id: int, db: Session = Depends(get_db)):
+    db_nivel = db.query(models.Nivel).filter(models.Nivel.id == nivel_id).first()
+    if db_nivel is None:
+        raise HTTPException(status_code=404, detail="Nível não encontrado")
+    db.delete(db_nivel)
+    db.commit()
+    return {"message": "Nível deletado com sucesso"}
 
 
-@app.post("/api/desenvolvedores", response_model=DesenvolvedoresResponse, status_code=status.HTTP_201_CREATED)
-def create_Desenvolvedores(request: DesenvolvedoresRequest, db: Session = Depends(get_db)):
-    desenvolvedores = DesenvolvedoresRepository.save_Desenvolvedores(db, Desenvolvedores(**request.dict()))
-    return DesenvolvedoresResponse.from_orm(desenvolvedores)
+# Rotas dos desenvolvedores
+@app.post("/desenvolvedores", response_model=schemas.DesenvolvedorOut)
+def create_desenvolvedor(desenvolvedor: schemas.DesenvolvedorCreate, db: Session = Depends(get_db)):
+    db_nivel = db.query(models.Nivel).filter(models.Nivel.id == desenvolvedor.idNivel).first()
+    if not db_nivel:
+        raise HTTPException(status_code=404, detail="Nivel não encontrado")
+    db_desenvolvedor = models.Desenvolvedor(nome=desenvolvedor.nome, idNivel=desenvolvedor.idNivel)
+    db.add(db_desenvolvedor)
+    db.commit()
+    db.refresh(db_desenvolvedor)
+    return db_desenvolvedor
+
+@app.get("/desenvolvedores/{desenvolvedor_id}", response_model=schemas.DesenvolvedorOut)
+def read_desenvolvedor(desenvolvedor_id: int, db: Session = Depends(get_db)):
+    db_desenvolvedor = db.query(models.Desenvolvedor).filter(models.Desenvolvedor.id == desenvolvedor_id).first()
+    if not db_desenvolvedor:
+        raise HTTPException(status_code=404, detail="Desenvolvedor não encontrado")
+    return db_desenvolvedor
+
+@app.put("/desenvolvedores/{desenvolvedor_id}", response_model=schemas.DesenvolvedorOut)
+def update_desenvolvedor(desenvolvedor_id: int, desenvolvedor: schemas.DesenvolvedorUpdate, db: Session = Depends(get_db)):
+    db_desenvolvedor = db.query(models.Desenvolvedor).filter(models.Desenvolvedor.id == desenvolvedor_id).first()
+    if not db_desenvolvedor:
+        raise HTTPException(status_code=404, detail="Desenvolvedor não encontrado")
+    if desenvolvedor.nome:
+        db_desenvolvedor.nome = desenvolvedor.nome
+    if desenvolvedor.idNivel:
+        db_nivel = db.query(models.Nivel).filter(models.Nivel.id == desenvolvedor.idNivel).first()
+        if not db_nivel:
+            raise HTTPException(status_code=404, detail="Nivel não encontrado")
+        db_desenvolvedor.idNivel = desenvolvedor.idNivel
+    db.commit()
+    db.refresh(db_desenvolvedor)
+    return db_desenvolvedor
+
+@app.delete("/desenvolvedores/{desenvolvedor_id}")
+def delete_desenvolvedor(desenvolvedor_id: int, db: Session = Depends(get_db)):
+    db_desenvolvedor = db.query(models.Desenvolvedor).filter(models.Desenvolvedor.id == desenvolvedor_id).first()
+    if not db_desenvolvedor:
+        raise HTTPException(status_code=404, detail="Desenvolvedor não encontrado")
+    db.delete(db_desenvolvedor)
+    db.commit()
+    return {"mensagem": "Desenvolvedor deletado com sucesso"}

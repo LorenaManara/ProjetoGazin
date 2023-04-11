@@ -40,7 +40,7 @@ const closeModalNiveis = () => {
 
 
 const getLocalStorage = () => JSON.parse(localStorage.getItem('db_desenvolvedores')) ?? []
-const setLocalStorage = (dbDesenvolvedores) => localStorage.setItem("db_desenvolvedores", JSON.stringify(dbDesenvolvedores))
+const setLocalStorage = (dbdesenvolvedores) => localStorage.setItem("db_desenvolvedores", JSON.stringify(dbdesenvolvedores))
 
 // CRUD - create read update delete
 const deleteDesenvolvedores = (index) => {
@@ -183,6 +183,7 @@ document.getElementById('modalCloseNiveis')
 document.getElementById('salvarDesenvolvedores')
     .addEventListener('click', saveDesenvolvedores)
 
+    //falta salvar Niveis
 
 document.getElementById('cancelarDesenvolvedores')
     .addEventListener('click', closeModalDesenvolvedores)

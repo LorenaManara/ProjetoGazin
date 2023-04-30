@@ -1,6 +1,7 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
+# arquivo do esqueleto da tabela
 
 # Definição do esquema para o modelo Nivel
 class NivelBase(BaseModel):

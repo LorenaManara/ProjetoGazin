@@ -1,3 +1,5 @@
+<!-- usado para explicar as coisas no git -->
+
 # API de Níveis e Desenvolvedores
 Esta é uma API de demonstração criada com o framework FastAPI para gerenciar informações de níveis e desenvolvedores.
 
@@ -17,13 +19,14 @@ git clone https://github.com/LorenaManara/ProjetoGazin.git
 
 #### 2. Crie um ambiente virtual e instale as dependências:
 ```
-cd api-niveis-desenvolvedores
+cd backend
 python3 -m venv venv
 source venv/bin/activate  # no Windows, use "venv\Scripts\activate"
 pip install -r requirements.txt
 ```
 
 #### 3. Execute a aplicação:
+
 
 ```
 uvicorn main:app --reload

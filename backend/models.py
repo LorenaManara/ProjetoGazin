@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from database import Base
 
+# regras e modelagens do objeto com a tabela
 
 # Definição da tabela de níveis
 class Nivel(Base):
